@@ -1269,7 +1269,7 @@ if (stage === 'changelog' && currentChangelog) {
         <div className="bg-white rounded-3xl p-8 border-2 border-orange-200 shadow-2xl mb-6">
           <div className="flex justify-between mb-6 pb-6 border-b-2 border-slate-100">
             <div>
-              <div className="text-orange-600 font-mono text-2xl font-bold">📦 {currentChangelog.version}</div>
+              <div className="text-orange-600 font-mono text-2xl font-bold">🌱 Week {currentChangelog.version.split('Week')[1]} • {currentChangelog.version.split('.')[0].substring(1)}</div>
               <div className="text-slate-500">{currentChangelog.date}</div>
             </div>
             <div className={`px-5 py-3 rounded-2xl bg-gradient-to-r ${getMoodColor(currentChangelog.mood)} text-white font-semibold flex items-center gap-2`}>

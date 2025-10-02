@@ -22,35 +22,38 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "user",
-          content: `You are analyzing a person's weekly check-in. They just recorded a voice note about their week.
+          content: `You are analyzing a person's weekly check-in. They just shared their thoughts about their week.
 
-Your job:
-1. Extract things they STARTED doing (new features)
-2. Extract things they STOPPED or FIXED (bug fixes)
-3. Extract ONGOING struggles (known issues)
-4. Rate their overall mood/wellbeing from 1-10
-5. Identify themes (work, health, relationships, mental, habits, growth, life)
+          Your job:
+          1. Extract things they STARTED doing (new features) - if any
+          2. Extract things they STOPPED or FIXED (bug fixes) - if any  
+          3. Extract ONGOING struggles or challenges (known issues)
+          4. Rate their overall mood/wellbeing from 1-10
+          5. Identify themes (work, health, relationships, mental, habits, growth, life)
 
-Be compassionate. Use their own words when possible. Keep items concise (5-10 words).
+          IMPORTANT: Many entries are reflective without clear action items. If nothing fits "started" or "fixed", leave those arrays empty. Focus on capturing their main challenges in known_issues and rating their mood accurately. For difficult periods, it's okay to have only known_issues populated.
 
-Here's their check-in:
-"${transcript}"
+          Be compassionate. Use their own words when possible. Keep items concise (8-15 words).
 
-Respond with ONLY valid JSON in this exact format:
-{
-  "new_features": ["Started morning walks", "Began therapy sessions"],
-  "bug_fixes": ["Stopped checking phone before bed"],
-  "known_issues": ["Still anxious about work deadlines"],
-  "mood": 7.5,
-  "themes": ["health", "habits", "mental"]
-}
+          Here's their check-in:
+          "${transcript}"
 
-Rules:
-- mood: number 1-10 (decimals ok)
-- Each array: 0-3 items max
-- themes: only use [work, health, relationships, mental, habits, growth, life]
-- Empty arrays if nothing fits
-- Be empathetic but concise`
+          Respond with ONLY valid JSON in this exact format:
+          {
+            "new_features": ["Started taking shifts with partner for sleep"],
+            "bug_fixes": [],
+            "known_issues": ["Exhausted from two-hour sleep chunks", "Feeling guilty about crying from exhaustion", "Not feeling like myself"],
+            "mood": 4.5,
+            "themes": ["health", "mental", "relationships"]
+          }
+
+          Rules:
+          - mood: number 1-10 (decimals ok, be realistic about difficult periods)
+          - Each array: 0-3 items max
+          - themes: only use [work, health, relationships, mental, habits, growth, life]
+          - Empty arrays are okay if nothing fits that category
+          - Be empathetic but concise
+          - Capture the reality of their experience, even if it's hard`
         }
       ]
     });
