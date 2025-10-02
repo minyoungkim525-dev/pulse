@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   }
 
   const form = formidable({
-    keepExtensions: true,  // ADD THIS
+    keepExtensions: true,
   });
 
   form.parse(req, async (err, fields, files) => {
@@ -42,6 +42,16 @@ export default async function handler(req, res) {
 
       // Clean up temp file
       fs.unlinkSync(audioFile.filepath);
+
+      // Validate transcription length
+      const transcript = transcription.text.trim();
+      
+      if (transcript.length < 50) {
+        return res.status(400).json({
+          error: 'Transcription too short',
+          details: 'Could not extract enough speech from your recording. Please speak more clearly or use text input.'
+        });
+      }
 
       res.status(200).json({ 
         success: true, 

@@ -265,10 +265,10 @@ const submitTextEntry = async () => {
   try {
     // Simulate progress updates while waiting for API
     const progressSteps = [
-      { step: 'mood', message: 'Thinking about what you said..', delay: 800 },
+      { step: 'mood', message: 'Thinking about what you said..', delay: 1200 },
       { step: 'themes', message: 'Detecting key themes...', delay: 1200 },
-      { step: 'patterns', message: 'Finding patterns...', delay: 1000 },
-      { step: 'generating', message: 'Creating your changelog...', delay: 800 }
+      { step: 'patterns', message: 'Finding patterns...', delay: 1200 },
+      { step: 'generating', message: 'Creating your changelog...', delay: 1200 }
     ];
     
     let currentStep = 0;

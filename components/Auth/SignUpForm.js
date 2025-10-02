@@ -36,7 +36,7 @@ export default function SignUpForm({ onSuccess, onSwitchToSignIn }) {
 
   if (success) {
     return (
-      <div className="max-w-md mx-auto p-6">
+      <div className="max-w-lg mx-auto p-6">
         <div className="bg-white rounded-3xl p-8 border-2 border-emerald-200 shadow-xl text-center">
           <div className="w-16 h-16 bg-emerald-100 rounded-full mx-auto mb-4 flex items-center justify-center">
             <span className="text-3xl">✉️</span>

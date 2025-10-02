@@ -33,7 +33,7 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
   }
 
   return (
-    <div className="max-w-md mx-auto p-6">
+    <div className="max-w-lg mx-auto p-6">
       <div className="bg-white rounded-3xl p-8 border-2 border-orange-200 shadow-xl">
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-br from-rose-400 to-orange-400 rounded-full mx-auto mb-4 flex items-center justify-center">
