@@ -149,8 +149,25 @@ const processRecording = async () => {
   }
 
   setStage("processing");
+  setAnalysisProgress({ step: 'starting', message: 'Processing your recording...' });
 
   try {
+    // Simulate progress updates while waiting for API
+    const progressSteps = [
+      { step: 'mood', message: 'Transcribing your voice...', delay: 800 },
+      { step: 'themes', message: 'Analyzing what you said...', delay: 1200 },
+      { step: 'patterns', message: 'Finding patterns...', delay: 1000 },
+      { step: 'generating', message: 'Creating your changelog...', delay: 800 }
+    ];
+    
+    let currentStep = 0;
+    const progressInterval = setInterval(() => {
+      if (currentStep < progressSteps.length) {
+        setAnalysisProgress(progressSteps[currentStep]);
+        currentStep++;
+      }
+    }, 800);
+
     const formData = new FormData();
     formData.append('audio', audioBlob, 'recording.wav');
 
@@ -160,6 +177,7 @@ const processRecording = async () => {
     });
 
     if (!transcribeResponse.ok) {
+      clearInterval(progressInterval);
       const errorData = await transcribeResponse.json();
       throw new Error(errorData.details || 'Failed to transcribe audio');
     }
@@ -172,11 +190,14 @@ const processRecording = async () => {
       body: JSON.stringify({ transcript }),
     });
 
+    clearInterval(progressInterval);
+
     if (!analyzeResponse.ok) {
       throw new Error('Failed to analyze entry');
     }
 
     const { analysis } = await analyzeResponse.json();
+    console.log('Raw API response:', JSON.stringify(analysis, null, 2)); 
 
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 1);
@@ -185,21 +206,21 @@ const processRecording = async () => {
     const newChangelog = {
       version: `v${now.getFullYear()}.Week${week}`,
       date: now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      newFeatures: analysis.newFeatures,
-      bugFixes: analysis.bugFixes,
-      knownIssues: analysis.knownIssues,
+      new_features: analysis.new_features,
+      bug_fixes: analysis.bug_fixes,
+      known_issues: analysis.known_issues,
       mood: analysis.mood,
       themes: analysis.themes,
       transcript
     };
 
-    setCurrentChangelog(newChangelog);
     const savedEntry = await saveEntry(user.id, newChangelog);
 
     if (savedEntry) {
       setHistory(prev => [savedEntry, ...prev]);
       setAudioBlob(null);
       setAudioURL(null);
+      setCurrentChangelog(savedEntry);
       toast.success("Entry saved successfully!");
       setTimeout(() => {
         setStage("changelog");
@@ -277,9 +298,9 @@ const submitTextEntry = async () => {
     const newChangelog = {
       version: `v${now.getFullYear()}.Week${week}`,
       date: now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      newFeatures: analysis.newFeatures,
-      bugFixes: analysis.bugFixes,
-      knownIssues: analysis.knownIssues,
+      new_features: analysis.new_features,
+      bug_fixes: analysis.bug_fixes,
+      known_issues: analysis.known_issues,
       mood: analysis.mood,
       themes: analysis.themes,
       transcript
@@ -574,14 +595,14 @@ if (stage === 'home') {
             <button 
               onClick={startRecording}
               className="bg-white border-2 border-orange-300 text-orange-600 font-semibold px-6 py-5 rounded-2xl hover:border-orange-400 transition-colors"
-              title="Voice recording (coming soon)"
+              title="Voice recording"
             >
               <Mic className="w-5 h-5" />
             </button>
           </div>
           
           <p className="text-xs text-slate-500 text-center mt-3">
-            Type 50+ characters about your week • Voice recording
+            Write 50+ characters • Or record your voice
           </p>
         </div>
 
@@ -1086,7 +1107,7 @@ if (stage === 'changelog' && currentChangelog) {
 
                 {/* Content Section */}
                 <div style={{ width: '100%' }}>
-                  {currentChangelog.newFeatures[0] && (
+                  {currentChangelog.new_features[0] && (
                     <div style={{ marginBottom: '16px' }}>
                       <div style={{
                         fontSize: '12px',
@@ -1105,11 +1126,11 @@ if (stage === 'changelog' && currentChangelog) {
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden'
                       }}>
-                        {currentChangelog.newFeatures[0]}
+                        {currentChangelog.new_features[0]}
                       </div>
                     </div>
                   )}
-                  {currentChangelog.bugFixes[0] && (
+                  {currentChangelog.bug_fixes[0] && (
                     <div style={{ marginBottom: '16px' }}>
                       <div style={{
                         fontSize: '12px',
@@ -1128,7 +1149,7 @@ if (stage === 'changelog' && currentChangelog) {
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden'
                       }}>
-                        {currentChangelog.bugFixes[0]}
+                        {currentChangelog.bug_fixes[0]}
                       </div>
                     </div>
                   )}
@@ -1257,33 +1278,33 @@ if (stage === 'changelog' && currentChangelog) {
             </div>
           </div>
 
-          {currentChangelog.newFeatures.length > 0 && (
+          {currentChangelog.new_features?.length > 0 && (
             <div className="mb-6">
               <h3 className="text-emerald-600 font-semibold mb-3">✨ New this week</h3>
               <ul className="space-y-2">
-                {currentChangelog.newFeatures.map((f, i) => (
+                {currentChangelog.new_features?.map((f, i) => (
                   <li key={i} className="text-slate-700 pl-4">• {f}</li>
                 ))}
               </ul>
             </div>
           )}
 
-          {currentChangelog.bugFixes.length > 0 && (
+          {currentChangelog.bug_fixes?.length > 0 && (
             <div className="mb-6">
               <h3 className="text-blue-600 font-semibold mb-3">🎯 Made progress on</h3>
               <ul className="space-y-2">
-                {currentChangelog.bugFixes.map((f, i) => (
+                {currentChangelog.bug_fixes?.map((f, i) => (
                   <li key={i} className="text-slate-700 pl-4">• {f}</li>
                 ))}
               </ul>
             </div>
           )}
 
-          {currentChangelog.knownIssues.length > 0 && (
+          {currentChangelog.known_issues?.length > 0 && (
             <div className="mb-6">
               <h3 className="text-amber-600 font-semibold mb-3">⚠️ Still working through</h3>
               <ul className="space-y-2">
-                {currentChangelog.knownIssues.map((f, i) => (
+                {currentChangelog.known_issues?.map((f, i) => (
                   <li key={i} className="text-slate-700 pl-4">• {f}</li>
                 ))}
               </ul>

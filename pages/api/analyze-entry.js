@@ -38,9 +38,9 @@ Here's their check-in:
 
 Respond with ONLY valid JSON in this exact format:
 {
-  "newFeatures": ["Started morning walks", "Began therapy sessions"],
-  "bugFixes": ["Stopped checking phone before bed"],
-  "knownIssues": ["Still anxious about work deadlines"],
+  "new_features": ["Started morning walks", "Began therapy sessions"],
+  "bug_fixes": ["Stopped checking phone before bed"],
+  "known_issues": ["Still anxious about work deadlines"],
   "mood": 7.5,
   "themes": ["health", "habits", "mental"]
 }
@@ -75,9 +75,9 @@ Rules:
     analysis.mood = Math.max(1, Math.min(10, Number(analysis.mood)));
 
     // Ensure arrays exist and are limited
-    analysis.newFeatures = (analysis.newFeatures || []).slice(0, 3);
-    analysis.bugFixes = (analysis.bugFixes || []).slice(0, 3);
-    analysis.knownIssues = (analysis.knownIssues || []).slice(0, 3);
+    analysis.new_features = (analysis.new_features || []).slice(0, 3);
+    analysis.bug_fixes = (analysis.bug_fixes || []).slice(0, 3);
+    analysis.known_issues = (analysis.known_issues || []).slice(0, 3);
     analysis.themes = (analysis.themes || []).slice(0, 5);
 
     res.status(200).json({ success: true, analysis });
