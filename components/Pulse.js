@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Square, Clock, ChevronRight, Check, Heart, Sun, Leaf, Download, Share2, Lightbulb, MessageCircle  } from 'lucide-react';
+import { Mic, Square, Clock, ChevronRight, Check, Heart, Sun, Leaf, Download, Share2, Lightbulb, MessageCircle, Trash2  } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
-import { fetchUserEntries, saveEntry } from '../lib/database';
+import { fetchUserEntries, saveEntry, deleteEntry } from '../lib/database';
 import { detectPatterns } from '../lib/insights';
 
 export default function Pulse() {
@@ -30,6 +30,7 @@ export default function Pulse() {
   const [analysisProgress, setAnalysisProgress] = useState({ step: '', message: '' });
   const [prediction, setPrediction] = useState(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
   
   const mediaRecorderRef = useRef(null);
   const timerRef = useRef(null);
@@ -330,6 +331,24 @@ const submitTextEntry = async () => {
     }
     
     setStage("home");
+  }
+};
+
+const handleDeleteEntry = async (entryId) => {
+  const success = await deleteEntry(user.id, entryId);
+  
+  if (success) {
+    setHistory(prev => prev.filter(e => e.id !== entryId));
+    setDeleteConfirm(null);
+    toast.success("Entry deleted");
+    
+    // If deleting current changelog, go back to home
+    if (currentChangelog?.id === entryId) {
+      setCurrentChangelog(null);
+      setStage('home');
+    }
+  } else {
+    toast.error("Couldn't delete entry. Try again.");
   }
 };
 
@@ -1559,6 +1578,16 @@ if (stage === 'history') {
                       <span className="text-2xl">{getMoodEmoji(e.mood)}</span>
                       <span className="text-sm">{e.mood}/10</span>
                     </div>
+                      <button
+                        onClick={(evt) => {
+                          evt.stopPropagation();
+                          setDeleteConfirm(e.id);
+                        }}
+                        className="text-slate-400 hover:text-red-500 transition-colors"
+                        title="Delete entry"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
                   </div>
                   {e.new_features && e.new_features[0] && (
                     <div className="text-sm text-slate-700 mb-2">
@@ -1586,6 +1615,35 @@ if (stage === 'history') {
               </div>
             )}
           </>
+        )}
+        {/* Delete Confirmation Modal */}
+        {deleteConfirm && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+            <div className="bg-white rounded-3xl p-8 max-w-md w-full border-2 border-red-200 shadow-2xl">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-red-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <Trash2 className="w-8 h-8 text-red-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-800 mb-2">Delete this entry?</h3>
+                <p className="text-slate-600 text-sm">This can't be undone. Your check-in and all its data will be permanently deleted.</p>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDeleteConfirm(null)}
+                  className="flex-1 bg-white border-2 border-slate-300 text-slate-700 py-3 rounded-2xl font-medium hover:border-slate-400 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDeleteEntry(deleteConfirm)}
+                  className="flex-1 bg-red-500 text-white py-3 rounded-2xl font-medium hover:bg-red-600 transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
