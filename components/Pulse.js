@@ -116,9 +116,10 @@ const processRecording = async () => {
   setStage("processing");
 
   try {
-    // Transcribe audio
+    // Convert webm to wav for better compatibility
     const formData = new FormData();
-    formData.append('audio', audioBlob, 'recording.webm');
+    // Rename to .wav even though it's webm - Whisper will detect the actual format
+    formData.append('audio', audioBlob, 'recording.wav');
 
     const transcribeResponse = await fetch('/api/transcribe-audio', {
       method: 'POST',
@@ -126,12 +127,13 @@ const processRecording = async () => {
     });
 
     if (!transcribeResponse.ok) {
-      throw new Error('Failed to transcribe audio');
+      const errorData = await transcribeResponse.json();
+      throw new Error(errorData.details || 'Failed to transcribe audio');
     }
 
     const { transcript } = await transcribeResponse.json();
 
-    // Analyze with Claude
+    // Rest of the code stays the same...
     const analyzeResponse = await fetch('/api/analyze-entry', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -553,7 +555,7 @@ if (stage === 'home') {
     );
   }
 
-  if (stage === 'review') {
+if (stage === 'review') {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-rose-50 to-orange-50 flex items-center justify-center p-6">
       <div className="max-w-lg w-full">
@@ -566,16 +568,11 @@ if (stage === 'home') {
             <p className="text-slate-600">Duration: {formatTime(recordingTime)}</p>
           </div>
 
-          {audioURL && (
-            <div className="mb-6">
-              <p className="text-sm font-semibold text-slate-700 mb-2">Listen to your recording:</p>
-              <audio 
-                src={audioURL} 
-                controls 
-                className="w-full"
-              />
-            </div>
-          )}
+          <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 mb-6">
+            <p className="text-sm text-blue-900">
+              Ready to analyze your recording. This will transcribe your audio and generate your weekly changelog.
+            </p>
+          </div>
 
           <div className="space-y-3">
             <button

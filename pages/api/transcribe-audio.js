@@ -17,10 +17,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const form = formidable();
+  const form = formidable({
+    keepExtensions: true,  // ADD THIS
+  });
 
   form.parse(req, async (err, fields, files) => {
     if (err) {
+      console.error('Form parse error:', err);
       return res.status(500).json({ error: 'Failed to parse form data' });
     }
 
@@ -30,11 +33,15 @@ export default async function handler(req, res) {
     }
 
     try {
+      // Read the file and send with proper filename
       const transcription = await openai.audio.transcriptions.create({
         file: fs.createReadStream(audioFile.filepath),
         model: 'whisper-1',
         language: 'en',
       });
+
+      // Clean up temp file
+      fs.unlinkSync(audioFile.filepath);
 
       res.status(200).json({ 
         success: true, 
