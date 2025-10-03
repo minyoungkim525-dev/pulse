@@ -488,10 +488,10 @@ if (stage === 'home') {
           </div>
         )}
         <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full mb-6 border-2 border-rose-200">
-          <Image src="/pulse-icon.svg" alt="Pulse" width={16} height={16} />
-          <span className="text-sm text-slate-700">A safe space to be real</span>
-        </div>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full mb-6 border-2 border-rose-200">
+            <img src="/pulse-logo.svg" alt="Pulse" className="w-4 h-4" />
+            <span className="text-sm text-slate-700">A safe space to be real</span>
+          </div>
           <h1 className="text-7xl font-bold text-slate-800 mb-4">Pulse</h1>
           <p className="text-xl text-slate-600">Check in weekly. No filters, no judgment. I'm here to listen.</p>
         </div>
@@ -1096,27 +1096,32 @@ if (stage === 'changelog' && currentChangelog) {
                     : 'linear-gradient(135deg, #d1fae5 0%, #fef3c7 50%, #ffe4e6 100%)'
                 }}
               >
-                {/* Top Section */}
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    backgroundColor: exportStyle === 'gradient' ? '#fb7185' : exportStyle === 'minimal' ? '#334155' : '#10b981',
-                    borderRadius: '50%',
-                    margin: '0 auto 16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <Heart style={{ width: '24px', height: '24px', color: 'white' }} fill="white" />
-                  </div>
-                  <div style={{ color: '#1e293b', fontWeight: 'bold', fontSize: '20px', marginBottom: '4px' }}>
-                    {currentChangelog.version}
-                  </div>
-                  <div style={{ color: '#64748b', fontSize: '14px' }}>
-                    {currentChangelog.date}
-                  </div>
+              {/* Top Section */}
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  backgroundColor: '#ffffff',
+                  borderRadius: '50%',
+                  margin: '0 auto 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                }}>
+                  <img 
+                    src="/pulse-icon.svg" 
+                    alt="Pulse" 
+                    style={{ width: '24px', height: '24px' }}
+                  />
                 </div>
+                <div style={{ color: '#1e293b', fontWeight: 'bold', fontSize: '20px', marginBottom: '4px' }}>
+                  {currentChangelog.version}
+                </div>
+                <div style={{ color: '#64748b', fontSize: '14px' }}>
+                  {currentChangelog.date}
+                </div>
+              </div>
 
                 {/* Mood Section */}
                 <div style={{ textAlign: 'center' }}>
