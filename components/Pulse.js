@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchUserEntries, saveEntry, deleteEntry } from '../lib/database';
 import { detectPatterns } from '../lib/insights';
+import Image from 'next/image';
 
 export default function Pulse() {
   const { user } = useAuth();
@@ -487,10 +488,10 @@ if (stage === 'home') {
           </div>
         )}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full mb-6 border-2 border-rose-200">
-            <Heart className="w-4 h-4 text-rose-500" fill="currentColor" />
-            <span className="text-sm text-slate-700">A safe space to be real</span>
-          </div>
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full mb-6 border-2 border-rose-200">
+          <Image src="/pulse-icon.svg" alt="Pulse" width={16} height={16} />
+          <span className="text-sm text-slate-700">A safe space to be real</span>
+        </div>
           <h1 className="text-7xl font-bold text-slate-800 mb-4">Pulse</h1>
           <p className="text-xl text-slate-600">Check in weekly. No filters, no judgment. I'm here to listen.</p>
         </div>
