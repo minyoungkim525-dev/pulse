@@ -401,20 +401,24 @@ const exportToImage = async () => {
     const dataUrl = await domtoimage.toPng(card, {
       width: 1080,
       height: 1920,
+      quality: 1,
       style: {
         transform: 'scale(1)',
-        transformOrigin: 'top left'
-      }
+        transformOrigin: 'top left',
+        margin: '0',
+        padding: '0'
+      },
+      bgcolor: '#ffffff'
     });
 
     const link = document.createElement('a');
-    link.download = `pulse-${currentChangelog.version}.png`;
+    link.download = `pulse-week-${currentChangelog.version.split('Week')[1]}.png`;
     link.href = dataUrl;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     
-    toast.success('Image downloaded! Share it on Instagram!');
+    toast.success('Image downloaded!');
     setShowExportModal(false);
     setIsExporting(false);
 
@@ -1080,10 +1084,11 @@ if (stage === 'changelog' && currentChangelog) {
             </div>
 
             {/* Preview Card */}
-            <div id="export-card" className="mb-6 rounded-2xl overflow-hidden border-2 border-slate-200 shadow-lg">
+            <div id="export-card" className="mb-6 rounded-2xl overflow-hidden">
               <div 
                 style={{
                   aspectRatio: '9/16',
+                  width: '100%',
                   padding: '32px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -1116,7 +1121,7 @@ if (stage === 'changelog' && currentChangelog) {
                   />
                 </div>
                 <div style={{ color: '#1e293b', fontWeight: 'bold', fontSize: '20px', marginBottom: '4px' }}>
-                  {currentChangelog.version}
+                  🌱 Week {currentChangelog.version.split('Week')[1]} • {currentChangelog.version.split('.')[0].substring(1)}
                 </div>
                 <div style={{ color: '#64748b', fontSize: '14px' }}>
                   {currentChangelog.date}
