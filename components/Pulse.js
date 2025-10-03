@@ -216,6 +216,7 @@ const processRecording = async () => {
     };
 
     const savedEntry = await saveEntry(user.id, newChangelog);
+    console.log('savedEntry from database:', savedEntry);
 
     if (savedEntry) {
       setHistory(prev => [savedEntry, ...prev]);
@@ -291,6 +292,7 @@ const submitTextEntry = async () => {
     if (!response.ok) throw new Error('Failed to analyze entry');
 
     const { analysis } = await response.json();
+    console.log('API returned:', analysis);
     
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 1);
@@ -308,6 +310,7 @@ const submitTextEntry = async () => {
     };
     
     const savedEntry = await saveEntry(user.id, newChangelog);
+    console.log('savedEntry from database:', savedEntry);
     
     if (savedEntry) {
       setHistory(prev => [savedEntry, ...prev]);
